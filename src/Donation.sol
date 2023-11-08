@@ -76,7 +76,7 @@ contract Donation {
         _;
     }
 
-    modifier onlyPatientDoctor(Patient _patient) {
+    modifier onlyPatientDoctor(Patient memory _patient) {
         require(
             _patient.patientsDoctor.doctorAddress == msg.sender,
             "Only the patients doctor can add a donor"
@@ -84,7 +84,7 @@ contract Donation {
         _;
     }
 
-    modifier onlyDonorDoctor(Donor _donor) {
+    modifier onlyDonorDoctor(Donor memory _donor) {
         require(
             _donor.donorsDoctor.doctorAddress == msg.sender,
             "Only the donors doctor can add a donor"
@@ -92,7 +92,7 @@ contract Donation {
         _;
     }
 
-    addMatchingOrganiser(address _organMatchingOrganiser) public onlyProcurementOrganiser{
+    function addMatchingOrganiser(address _organMatchingOrganiser) public onlyProcurementOrganiser{
         require(
             msg.sender == procurementOrganiser,
             "Only the procurement organiser can add an organ matching organiser"
@@ -100,11 +100,11 @@ contract Donation {
         organMatchingOrganiser = _organMatchingOrganiser;
     }
 
-    addDoctor(string memory _name, uint8 _age) public onlyOrganMatchingOrganiser {
+    function addDoctor(string memory _name, uint8 _age) public onlyOrganMatchingOrganiser {
         doctors.push(Doctor(msg.sender, _name, _age));
     }
 
-    addPatient(
+    function addPatient(
         string memory _name,
         uint8 _age,
         Urgency _urgency,
@@ -123,7 +123,7 @@ contract Donation {
         );
     }
 
-    addDonor(
+    function addDonor(
         string memory _name,
         uint8 _age,
         BloodType _bloodType
@@ -140,7 +140,7 @@ contract Donation {
         );
     }
 
-    matchDonorToPatient(Patient _patient, Donor _donor) public onlyPatientDoctor(_patient) onlyDonorDoctor(_donor) {
+    function matchDonorToPatient(Patient memory _patient, Donor memory _donor) public onlyPatientDoctor(_patient) onlyDonorDoctor(_donor) {
         require(
             _patient.bloodType == _donor.bloodType,
             "The patient and donor must have the same blood type"
