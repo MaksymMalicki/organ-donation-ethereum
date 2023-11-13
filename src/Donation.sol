@@ -1,161 +1,66 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
+import "./Modifiers.sol";
+import "./Structs.sol";
+import "./Patients.sol";
+import "./Doctors.sol";
+import "./Donors.sol";
+import "./Transplantation.sol";
 
-enum Urgency {
-    Low,
-    Medium,
-    High
-}
-
-enum BloodType {
-    A,
-    B,
-    AB,
-    O
-}
-
-struct Doctor {
-    address doctorAddress;
-    string name;
-    uint8 age;
-}
-
-struct Patient {
-    address patientAddress;
-    string name;
-    uint8 age;
-    Urgency urgency;
-    uint256 dateAdded;
-    BloodType bloodType;
-    Doctor patientsDoctor;
-}
-
-struct Donor {
-    address donorAddress;
-    string name;
-    uint8 age;
-    BloodType bloodType;
-    uint256 dateAdded;
-    Doctor donorsDoctor;
-}
-
-contract Donation {
+contract Donation is Modifiers{
     address procurementOrganiser;
-    address organMatchingOrganiser;
-    Patient[] patients;
-    Donor[] donors;
-    Doctor[] doctors;
+    Patients patientsContract;
+    Doctors doctorsContract;
+    Donors donorsContract;
+    TransplantationProposal[] proposals;
 
-    constructor() {
+    event DoctorNotified(address indexed doctor, address indexed patient, address indexed donor, uint256 timeCreated); 
+
+    constructor(address _patientsContractAddress, address _doctorsContractAddress, address _donorsContractAddress) {
         procurementOrganiser = msg.sender;
+        patientsContract = Patients(_patientsContractAddress);
+        doctorsContract = Doctors(_doctorsContractAddress);
+        donorsContract = Donors(_donorsContractAddress);
     }
 
-    modifier onlyProcurementOrganiser() {
-        require(
-            msg.sender == procurementOrganiser,
-            "Only the procurement organiser can add an organ matching organiser"
-        );
-        _;
-    }
-
-    modifier onlyOrganMatchingOrganiser() {
-        require(
-            msg.sender == organMatchingOrganiser,
-            "Only the organ matching organiser can add an organ matching organiser"
-        );
-        _;
-    }
-
-    modifier onlyDoctor() {
-        bool isDoctor = false;
-        for (uint256 i = 0; i < doctors.length; i++) {
-            if (doctors[i].doctorAddress == msg.sender) {
-                isDoctor = true;
+    function matchDonorToPatient(Donor memory _donor) public view onlyProcurementOrganiser(procurementOrganiser) returns (Patient[] memory) {
+        Patient[] memory _matchedPatients = new Patient[](5);
+        uint256 _matchedPatientsCounter = 0;
+        uint256 len = patientsContract.getPatientsArrayLength();
+        Patient memory patient;
+        for (uint256 i = 0; i < len; i++) {
+            patient = patientsContract.getPatientFromMapping(
+                patientsContract.getPatientAddressById(i)
+            );
+            if (patient.bloodType == _donor.bloodType && _matchedPatientsCounter < 5) {
+                _matchedPatients[_matchedPatientsCounter] = patient;
             }
         }
-        require(isDoctor, "Only a doctor can add a patient or donor");
-        _;
+        return _matchedPatients;
     }
 
-    modifier onlyPatientDoctor(Patient memory _patient) {
-        require(
-            _patient.patientsDoctor.doctorAddress == msg.sender,
-            "Only the patients doctor can add a donor"
-        );
-        _;
-    }
-
-    modifier onlyDonorDoctor(Donor memory _donor) {
-        require(
-            _donor.donorsDoctor.doctorAddress == msg.sender,
-            "Only the donors doctor can add a donor"
-        );
-        _;
-    }
-
-    function addMatchingOrganiser(address _organMatchingOrganiser) public onlyProcurementOrganiser{
-        require(
-            msg.sender == procurementOrganiser,
-            "Only the procurement organiser can add an organ matching organiser"
-        );
-        organMatchingOrganiser = _organMatchingOrganiser;
-    }
-
-    function addDoctor(string memory _name, uint8 _age) public onlyOrganMatchingOrganiser {
-        doctors.push(Doctor(msg.sender, _name, _age));
-    }
-
-    function addPatient(
+    function registerNewPatient(
+        address _patientAddress,
         string memory _name,
         uint8 _age,
         Urgency _urgency,
         BloodType _bloodType
-    ) public onlyDoctor {
-        patients.push(
-            Patient(
-                msg.sender,
-                _name,
-                _age,
-                _urgency,
-                block.timestamp,
-                _bloodType,
-                Doctor(msg.sender, "", 0)
-            )
+    ) public onlyDoctor(doctorsContract.getDoctors()) {
+        patientsContract.registerPatient(
+            _patientAddress,
+            _name,
+            _age,
+            _urgency,
+            _bloodType,
+            doctorsContract.getDoctors()
         );
     }
 
-    function addDonor(
-        string memory _name,
-        uint8 _age,
-        BloodType _bloodType
-    ) public onlyDoctor {
-        donors.push(
-            Donor(
-                msg.sender,
-                _name,
-                _age,
-                _bloodType,
-                block.timestamp,
-                Doctor(msg.sender, "", 0)
-            )
-        );
+    function notifyDoctor(Patient memory _patient, address _donorsAddress) public onlyProcurementOrganiser(procurementOrganiser) {
+        emit DoctorNotified(_patient.patientsDoctor, _patient.patientAddress, _donorsAddress, block.timestamp);
     }
 
-    function matchDonorToPatient(Patient memory _patient, Donor memory _donor) public onlyPatientDoctor(_patient) onlyDonorDoctor(_donor) {
-        require(
-            _patient.bloodType == _donor.bloodType,
-            "The patient and donor must have the same blood type"
-        );
-        require(
-            _patient.urgency == Urgency.High,
-            "The patient must have a high urgency"
-        );
-        require(
-            _donor.dateAdded > _patient.dateAdded,
-            "The donor must have been added after the patient"
-        );
-        _patient.patientsDoctor = Doctor(address(0), "", 0);
-        _donor.donorsDoctor = Doctor(address(0), "", 0);
+    function startTransplantation(Patient memory _patient, address _donor, string memory label) public onlyPatientDoctor(_patient) {
+        Transplantation transplantation = new Transplantation(_donor, _patient.patientAddress, label);
     }
-
-
 }
