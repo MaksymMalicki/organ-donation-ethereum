@@ -1,27 +1,39 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import {LandingComponent} from "./modules/unauth/landing/landing.component";
+import {LoginComponent} from "./modules/unauth/login/login.component";
+import {PatientComponent} from "./modules/auth/patient/patient.component";
+import {DonorComponent} from "./modules/auth/donor/donor.component";
+import {DoctorComponent} from "./modules/auth/doctor/doctor.component";
+import {
+  OrganProcurementOrganiserComponent
+} from "./modules/auth/organ-procurement-organiser/organ-procurement-organiser.component";
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: ()=>import('./modules/unauth/landing/landing.module').then(m=>m.LandingModule),
+    component: LandingComponent
   },
   {
     path: 'organ-procurement-organiser',
-    loadChildren: ()=>import('./modules/auth/organ-procurement-organiser/organ-procurement-organiser.module').then(m=>m.OrganProcurementOrganiserModule),
+    component: OrganProcurementOrganiserComponent,
   },
   {
     path: 'doctor',
-    loadChildren: ()=>import('./modules/auth/doctor/doctor.module').then(m=>m.DoctorModule),
+    component: DoctorComponent,
   },
   {
     path: 'donor',
-    loadChildren: ()=>import('./modules/auth/donor/donor.module').then(m=>m.DonorModule),
+    component: DonorComponent,
   },
   {
     path: 'patient',
-    loadChildren: ()=>import('./modules/auth/patient/patient.module').then(m=>m.PatientModule),
+    component: PatientComponent,
     canActivate: []
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
   },
 ];
 

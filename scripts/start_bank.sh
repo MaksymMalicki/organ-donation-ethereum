@@ -1,2 +1,0 @@
-geth init --datadir bank genesis.json
-geth --datadir bank --port 30308 --bootnodes enode://7ee44918891465601e982de42e0fdbfaf90553b9d6e5553bf76df7531a4fbae9997d11fc38e3e3b0a50fccbaf41220278aaa3c71d14e5c32f5e9ee4b85d1c722@127.0.0.1:0?discport=30305  --networkid 12345 --unlock 0x1BcfB2968829603c31b814b6641f793d3D64350A --password bank/password.txt --authrpc.port 8553 --http --http.api eth,net,web3 --allow-insecure-unlock --mine --miner.etherbase 0x1BcfB2968829603c31b814b6641f793d3D64350A --miner.gasprice 1

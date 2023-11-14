@@ -46,4 +46,8 @@ contract Donors is Modifiers{
         );
         _donor.isKidneyGoodToTransplant = true;
     }
+
+    function isDonor(Donor memory _donor) public view returns(Donor memory) {
+        return donorsMap[_donor.donorAddress];
+    }
 }

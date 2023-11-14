@@ -13,10 +13,8 @@ import * as DonorsABI from "../../../abi/Donors.abi";
   providedIn: 'root'
 })
 export class Web3Service {
-
-  rpcUrl = 'http://localhost:8545';
   private config = {
-    rpcUrl: 'http://localhost:8545',
+    rpcUrl: "http://127.0.0.1:8545",
     patientsContract: {
       address: '0x0',
       abi: PatientsABI
@@ -43,7 +41,7 @@ export class Web3Service {
   ) { }
 
   loadWeb3(): any {
-    this.web3 = new Web3(new Web3.providers.HttpProvider(this.rpcUrl));
+    this.web3 = new Web3(new Web3.providers.HttpProvider(this.config.rpcUrl));
     this.patientsContract = new this.web3.eth.Contract(this.config.patientsContract.abi, this.config.patientsContract.address);
     this.doctorsContract = new this.web3.eth.Contract(this.config.doctorsContract.abi, this.config.doctorsContract.address);
     this.donorsContract = new this.web3.eth.Contract(this.config.donorsContract.abi, this.config.donorsContract.address);
