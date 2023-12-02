@@ -22,6 +22,6 @@ export class LoginComponent implements OnInit {
   }
 
   submitLoginForm() {
-    this.authService.authenticate(this.loginForm.value.address, this.loginForm.value.passphrase);
+    this.authService.authenticate(this.loginForm.value.passphrase);
   }
 }

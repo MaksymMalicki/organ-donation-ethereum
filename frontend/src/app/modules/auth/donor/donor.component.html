@@ -1,1 +1,14 @@
-<p>donor works!</p>
+<mat-tab-group>
+  <mat-tab label="Donors data">
+    <div *ngIf="!!donor">
+      <form [formGroup]="donorDataForm" (ngSubmit)="submitDonorDataForm()">
+        <input [value]="donor.address" formControlName="address"/>
+        <input [value]="donor.name" formControlName="name"/>
+        <input [value]="donor.age" formControlName="age"/>
+        <input [value]="donor.bloodType" formControlName="bloodType"/>
+        <div>{{donor.isAlive}}</div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </mat-tab>
+</mat-tab-group>

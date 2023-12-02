@@ -10,6 +10,7 @@ struct Patient {
     Urgency urgency;
     BloodType bloodType;
     address patientsDoctor;
+    bool isInTransplantation;
 }
 
 struct Donor {

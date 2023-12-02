@@ -1,1 +1,23 @@
-<p>patient works!</p>
+<mat-tab-group>
+  <mat-tab label="Patient data">
+    <div *ngIf="!!patient">
+      <form [formGroup]="patientDataForm" (ngSubmit)="submitPatientDataForm()">
+        <input [value]="patient.patientAddress" formControlName="address"/>
+        <input [value]="patient.name" formControlName="name"/>
+        <input [value]="patient.age" formControlName="age"/>
+        <input [value]="patient.bloodType" formControlName="bloodType"/>
+        <div>{{patient.isInTransplantation}}</div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </mat-tab>
+  <mat-tab label="Transplantation data">
+    <div *ngIf="!!transplantation">
+      <span>{{transplantation.label}}</span>
+      <span>{{transplantation.timeCreated}}</span>
+      <span>{{transplantation.timeTransported}}</span>
+      <span>{{transplantation.timeTransplanted}}</span>
+      <span>{{transplantation.transplantationStatusConfirmedTime}}</span>
+    </div>
+  </mat-tab>
+</mat-tab-group>

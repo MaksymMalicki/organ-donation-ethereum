@@ -13,8 +13,11 @@ import {PatientComponent} from "./modules/auth/patient/patient.component";
 import {LandingComponent} from "./modules/unauth/landing/landing.component";
 import {DonorComponent} from "./modules/auth/donor/donor.component";
 import {DoctorComponent} from "./modules/auth/doctor/doctor.component";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatTabsModule} from "@angular/material/tabs";
+import { NavbarComponent } from './shared/components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -25,13 +28,17 @@ import {HttpClientModule} from "@angular/common/http";
     LandingComponent,
     DonorComponent,
     DoctorComponent,
+    NavbarComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        MatTabsModule,
+        FormsModule,
+    ],
   providers: [
     AuthService,
     Web3Service,

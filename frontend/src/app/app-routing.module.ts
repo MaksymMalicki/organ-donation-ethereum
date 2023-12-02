@@ -8,6 +8,10 @@ import {DoctorComponent} from "./modules/auth/doctor/doctor.component";
 import {
   OrganProcurementOrganiserComponent
 } from "./modules/auth/organ-procurement-organiser/organ-procurement-organiser.component";
+import {isProcurementOrganiser} from "./shared/guards/is-procurement-organiser.guard";
+import {IsDoctorGuard} from "./shared/guards/is-doctor.guard";
+import {IsDonorGuard} from "./shared/guards/is-donor.guard";
+import {IsPatientGuard} from "./shared/guards/is-patient.guard";
 
 const routes: Routes = [
   {
@@ -15,25 +19,28 @@ const routes: Routes = [
     component: LandingComponent
   },
   {
+    path: 'login',
+    component: LoginComponent,
+  },
+  {
     path: 'organ-procurement-organiser',
     component: OrganProcurementOrganiserComponent,
+    canActivate: [isProcurementOrganiser],
   },
   {
     path: 'doctor',
     component: DoctorComponent,
+    canActivate: [IsDoctorGuard],
   },
   {
     path: 'donor',
     component: DonorComponent,
+    canActivate: [IsDonorGuard],
   },
   {
     path: 'patient',
     component: PatientComponent,
-    canActivate: []
-  },
-  {
-    path: 'login',
-    component: LoginComponent,
+    canActivate: [IsPatientGuard]
   },
 ];
 

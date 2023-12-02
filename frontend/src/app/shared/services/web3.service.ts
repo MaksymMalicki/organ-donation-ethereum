@@ -1,35 +1,29 @@
 import { Injectable } from '@angular/core';
 import {Web3} from "web3";
-// @ts-ignore
-import * as DonationABI from "../../../abi/Donation.abi";
-// @ts-ignore
-import * as PatientsABI from "../../../abi/Patients.abi";
-// @ts-ignore
-import * as DoctorsABI from "../../../abi/Doctors.abi";
-// @ts-ignore
-import * as DonorsABI from "../../../abi/Donors.abi";
+import {doctorsAbi, donationAbi, donorsAbi, patientsAbi} from "../consts/abi.const";
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class Web3Service {
   private config = {
-    rpcUrl: "http://127.0.0.1:8545",
+    rpcUrl: "",
     patientsContract: {
-      address: '0x0',
-      abi: PatientsABI
+      address: '0xd5f19bA217eed23E4d004938158d46e9755d28Ee',
+      abi: patientsAbi
     },
     doctorsContract: {
-      address: '0x0',
-      abi: DoctorsABI
+      address: '0x98538c41B236F5CABb434C6C06F95bDb0a74506A',
+      abi: doctorsAbi
     },
     donorsContract: {
-      address: '0x0',
-      abi: DonorsABI
+      address: '0xbdbD100fAa50a5E779EadAEC7a42877c99197902',
+      abi: donorsAbi
     },
     donationContract: {
-      address: '0x0',
-      abi: DonationABI
+      address: '0xf4296FBBEA20DDe9009963CB11D2F3071c1fd2c9',
+      abi: donationAbi
     },
   }
   public web3: Web3
@@ -41,7 +35,12 @@ export class Web3Service {
   ) { }
 
   loadWeb3(): any {
-    this.web3 = new Web3(new Web3.providers.HttpProvider(this.config.rpcUrl));
+    if ((window as any).ethereum) {
+      this.web3 = new Web3((window as any).ethereum);
+      (window as any).ethereum.enable();
+    } else {
+      console.error('MetaMask is not installed');
+    }
     this.patientsContract = new this.web3.eth.Contract(this.config.patientsContract.abi, this.config.patientsContract.address);
     this.doctorsContract = new this.web3.eth.Contract(this.config.doctorsContract.abi, this.config.doctorsContract.address);
     this.donorsContract = new this.web3.eth.Contract(this.config.donorsContract.abi, this.config.donorsContract.address);

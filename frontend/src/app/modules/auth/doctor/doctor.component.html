@@ -1,1 +1,140 @@
-<p>doctor works!</p>
+<mat-tab-group>
+  <mat-tab label="Patients">
+    <div class="flex mb-4">
+      <div class="w-full p-4 block p-6 bg-white border border-gray-200 rounded-lg shadow">
+        <table class="w-full bg-white border border-gray-300">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+            <tr>
+              <th class="py-2 px-4 border-b text-center">Address</th>
+              <th class="py-2 px-4 border-b text-center">Name</th>
+              <th class="py-2 px-4 border-b text-center">Age</th>
+              <th class="py-2 px-4 border-b text-center">Blood type</th>
+              <th class="py-2 px-4 border-b text-center">Date added</th>
+              <th class="py-2 px-4 border-b text-center">Urgency</th>
+              <th class="py-2 px-4 border-b text-center">isInTransplantation</th>
+              <th class="py-2 px-4 border-b text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let patient of patients" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
+            <td class="py-2 px-4 border-b text-center">{{patient.patientAddress}}</td>
+            <td class="py-2 px-4 border-b text-center"><input value="{{patient.name}}" [(ngModel)]="patient.name"/></td>
+            <td class="py-2 px-4 border-b text-center"><input value="{{patient.age}}" [(ngModel)]="patient.age"/></td>
+            <td class="py-2 px-4 border-b text-center"><input value="{{patient.bloodType}}" [(ngModel)]="patient.bloodType"/></td>
+            <td class="py-2 px-4 border-b text-center">{{patient.dateAdded}}</td>
+            <td class="py-2 px-4 border-b text-center"><input value="{{patient.urgency}}" [(ngModel)]="patient.urgency"/></td>
+            <td class="py-2 px-4 border-b text-center">{{patient.isInTransplantation}}</td>
+            <button (click)="modifyPatientData(patient)">Submit</button>
+            <button (click)="deletePatient(patient)">Delete</button>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="New patient">
+    <div class="flex-grow mb-4">
+      <div class="w-1/2 p-4 block p-6 bg-white border border-gray-200 rounded-lg shadow mx-auto mt-5">
+
+      <form [formGroup]="newPatientForm" (ngSubmit)="onNewPatientFormSubmit()" class="max-w-sm mx-auto">
+        <div class="mb-5">
+          <label for="patientAddress" class="block mb-2 text-sm font-medium text-gray-900">Patient address</label>
+          <input id="patientAddress" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Patient address" formControlName="patientAddress" required>
+        </div>
+        <div class="mb-5">
+          <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Name</label>
+          <input id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="name" formControlName="name" required>
+        </div>
+        <div class="mb-5">
+          <label for="age" class="block mb-2 text-sm font-medium text-gray-900">Age</label>
+          <input id="age" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="age" formControlName="age" required>
+        </div>
+        <div class="mb-5">
+          <label for="bloodType" class="block mb-2 text-sm font-medium text-gray-900">Blood Type</label>
+          <input id="bloodType" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Blood Type" formControlName="bloodType" required>
+        </div>
+        <div class="mb-5">
+          <label for="urgency" class="block mb-2 text-sm font-medium text-gray-900">Urgency</label>
+          <input id="urgency" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Urgency" formControlName="urgency" required>
+        </div>
+        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Create doctor</button>
+      </form>
+    </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="Proposals">
+    <div *ngFor="let proposal of proposals">
+      <div>{{proposal.donor_address}}</div>
+      <div>{{proposal.patient_address}}</div>
+      <div>
+        <button (click)="acceptProposal(proposal)">Accept</button>
+        <button (click)="rejectProposal(proposal)">Reject</button>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="Transplantations">
+    <div class="flex mb-4">
+      <div class="w-full p-4 block p-6 bg-white border border-gray-200 rounded-lg shadow">
+        <table class="w-full bg-white border border-gray-300">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+          <tr>
+            <th class="py-2 px-4 border-b text-center">Donor</th>
+            <th class="py-2 px-4 border-b text-center">Patient</th>
+            <th class="py-2 px-4 border-b text-center">Doctor</th>
+            <th class="py-2 px-4 border-b text-center">Label</th>
+            <th class="py-2 px-4 border-b text-center">Time created</th>
+            <th class="py-2 px-4 border-b text-center">Time transported</th>
+            <th class="py-2 px-4 border-b text-center">Time transplanted</th>
+            <th class="py-2 px-4 border-b text-center">Transplantation Status Confirmed Time</th>
+            <th class="py-2 px-4 border-b text-center">Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let transplantation of transplantations" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
+            <td class="py-2 px-4 border-b text-center">{{transplantation.donor}}</td>
+            <td class="py-2 px-4 border-b text-center">{{transplantation.patient}}</td>
+            <td class="py-2 px-4 border-b text-center">{{transplantation.doctor}}</td>
+            <td class="py-2 px-4 border-b text-center">{{transplantation.label}}</td>
+            <td class="py-2 px-4 border-b text-center">
+              {{transplantation.timeCreated}}
+            </td>
+            <td class="py-2 px-4 border-b text-center">
+              <ng-container *ngIf="transplantation.timeTransported != 0;else timeTransportedNotSet">
+                {{transplantation.timeTransported}}
+              </ng-container>
+              <ng-template #timeTransportedNotSet>
+                <button (click)="setTimeTransported(transplantation)">Set time transported</button>
+              </ng-template>
+            </td>
+            <td class="py-2 px-4 border-b text-center">
+              <ng-container *ngIf="transplantation.timeTransplanted != 0;else timeTransplantedNotSet">
+                {{transplantation.timeTransplanted}}
+              </ng-container>
+              <ng-template #timeTransplantedNotSet>
+                <button (click)="setTimeTransplanted(transplantation)">Set time transplanted</button>
+              </ng-template>
+            </td>
+            <td class="py-2 px-4 border-b text-center">
+              <ng-container>
+                {{transplantation.transplantationStatusConfirmedTime}}
+              </ng-container>
+              <ng-template #timeTransportedNotSet>
+                <button (click)="setTimeConfirmed(transplantation)">Set time transported</button>
+              </ng-template>
+            </td>
+            <td class="py-2 px-4 border-b text-center">
+              <ng-container *ngIf="transplantation.transplantationStatusConfirmedTime == 0;else statusNotSet">
+                {{transplantation.isSuccessful}}
+              </ng-container>
+              <ng-template #statusNotSet>
+                <button (click)="setStatus(transplantation)">Set status</button>
+              </ng-template>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </mat-tab>
+</mat-tab-group>

@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.13;
-import "./Modifiers.sol";
 import "./Structs.sol";
 import "./Patients.sol";
 import "./Doctors.sol";
 import "./Donors.sol";
 import "./Transplantation.sol";
 
-contract Donation is Modifiers{
-    address procurementOrganiser;
+contract Donation{
+    address public procurementOrganiser;
+    mapping (address => Transplantation) transplantationsMapping;
     Patients patientsContract;
     Doctors doctorsContract;
     Donors donorsContract;
-    TransplantationProposal[] proposals;
 
     event DoctorNotified(address indexed doctor, address indexed patient, address indexed donor, uint256 timeCreated); 
 
@@ -23,7 +23,30 @@ contract Donation is Modifiers{
         donorsContract = Donors(_donorsContractAddress);
     }
 
-    function matchDonorToPatient(Donor memory _donor) public view onlyProcurementOrganiser(procurementOrganiser) returns (Patient[] memory) {
+    modifier onlyProcurementOrganiser() {
+        require(
+            msg.sender == procurementOrganiser,
+            "Only the procurement organiser can do this"
+        );
+        _;
+    }
+
+    modifier onlyDoctor() {
+        uint256 len = doctorsContract.getDoctorsArrayLength();
+        address[] memory doctors = doctorsContract.getDoctors();
+        bool isDoctor = false;
+        for(uint256 i=0; i<len; i++){
+            if(msg.sender == doctors[i]){
+                isDoctor = true;
+                break;
+            }
+        }
+        require(isDoctor, "Only doctor can do this!");
+        _;
+    }
+
+    function matchDonorToPatient(address da) public view onlyProcurementOrganiser returns (Patient[] memory) {
+        Donor memory _donor = donorsContract.getDonorFromMapping(da);
         Patient[] memory _matchedPatients = new Patient[](5);
         uint256 _matchedPatientsCounter = 0;
         uint256 len = patientsContract.getPatientsArrayLength();
@@ -32,35 +55,36 @@ contract Donation is Modifiers{
             patient = patientsContract.getPatientFromMapping(
                 patientsContract.getPatientAddressById(i)
             );
-            if (patient.bloodType == _donor.bloodType && _matchedPatientsCounter < 5) {
-                _matchedPatients[_matchedPatientsCounter] = patient;
+            if (patient.bloodType == _donor.bloodType && patient.isInTransplantation == false) {
+                if(_matchedPatientsCounter <= 5){
+                    _matchedPatients[_matchedPatientsCounter] = patient;
+                    _matchedPatientsCounter++;
+                } else {
+                    for(uint256 j=0; j<5; j++){
+                        if(_matchedPatients[j].urgency < patient.urgency || (_matchedPatients[j].urgency == patient.urgency && _matchedPatients[j].dateAdded > patient.dateAdded)){
+                            _matchedPatients[j] = patient;
+                            break;
+                        }
+                    }
+                }
             }
         }
         return _matchedPatients;
     }
 
-    function registerNewPatient(
-        address _patientAddress,
-        string memory _name,
-        uint8 _age,
-        Urgency _urgency,
-        BloodType _bloodType
-    ) public onlyDoctor(doctorsContract.getDoctors()) {
-        patientsContract.registerPatient(
-            _patientAddress,
-            _name,
-            _age,
-            _urgency,
-            _bloodType,
-            doctorsContract.getDoctors()
-        );
-    }
-
-    function notifyDoctor(Patient memory _patient, address _donorsAddress) public onlyProcurementOrganiser(procurementOrganiser) {
+    function notifyDoctor(address pa, address _donorsAddress) public onlyProcurementOrganiser {
+        Patient memory _patient = patientsContract.getPatientFromMapping(pa);
         emit DoctorNotified(_patient.patientsDoctor, _patient.patientAddress, _donorsAddress, block.timestamp);
     }
 
-    function startTransplantation(Patient memory _patient, address _donor, string memory label) public onlyPatientDoctor(_patient) {
-        Transplantation transplantation = new Transplantation(_donor, _patient.patientAddress, label);
+    function startTransplantation(address pa, address da, string memory label) public onlyDoctor{
+        patientsContract.setPatientIsInTransplantation(pa, true);
+        new Transplantation(msg.sender, da, pa, procurementOrganiser, label);
+    }
+
+    function getTransplantationByAddress(address ta) public view returns (Transplantation){
+        Transplantation _transplantation = transplantationsMapping[ta];
+        require(_transplantation.patient() == msg.sender || _transplantation.doctor() == msg.sender || procurementOrganiser == msg.sender, "Only the transplantation doctor, procurement organiser and patient or patient can view transplantation data");
+        return _transplantation;
     }
 }
