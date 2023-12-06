@@ -1,7 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Transplantation} from "../../../shared/interfaces/transplantation.interface";
 import {Patient} from "../../../shared/interfaces/patient.interface";
-import {Donor} from "../../../shared/interfaces/donor.interface";
 import {Web3Service} from "../../../shared/services/web3.service";
 import {AuthService} from "../auth.service";
 import {from} from "rxjs";
@@ -15,9 +14,11 @@ import {HttpClient} from "@angular/common/http";
 })
 export class DoctorComponent implements OnInit {
   transplantations: Transplantation[] = [];
+  transplantationsSearchTerm: string = "";
   patients: Patient[];
-  donor: Donor;
+  patientsSearchTerm: string = "";
   proposals: any[];
+  proposalsSearchTerm: string = "";
   newPatientForm: FormGroup;
   constructor(
     private formBuilder: FormBuilder,
@@ -42,6 +43,30 @@ export class DoctorComponent implements OnInit {
       }
     );
     this.getDoctorProposals();
+  }
+
+  get filterPatients(): Patient[] {
+    return this.patients.filter(item =>
+      Object.values(item).some(value =>
+        typeof value === 'string' && value.toLowerCase().includes(this.patientsSearchTerm.toLowerCase())
+      )
+    );
+  }
+
+  get filterProposals(): any[] {
+    return this.proposals.filter(item =>
+      Object.values(item).some(value =>
+        typeof value === 'string' && value.toLowerCase().includes(this.proposalsSearchTerm.toLowerCase())
+      )
+    );
+  }
+
+  get filterTransplantation(): Transplantation[] {
+    return this.transplantations.filter(item =>
+      Object.values(item).some(value =>
+        typeof value === 'string' && value.toLowerCase().includes(this.transplantationsSearchTerm.toLowerCase())
+      )
+    );
   }
 
   modifyPatientData(patient: Patient) {
@@ -89,6 +114,7 @@ export class DoctorComponent implements OnInit {
     this.http.get(`http://127.0.0.1:8000/query-proposal/${this.authService.address}/`).subscribe(
       (proposals: any) => {
         this.proposals = proposals;
+        console.log(proposals);
       }
     );
   }
@@ -125,7 +151,8 @@ export class DoctorComponent implements OnInit {
       (patient: Patient) => {
         from(this.web3Service.donationContract.methods.getDoctorsTransplantations(patient.patientAddress).call({from: this.authService.address})).subscribe(
           (transplantations: any) => {
-            this.transplantations.push(transplantations);
+            console.log(transplantations);
+            if(transplantations.patient !== "0x0000000000000000000000000000000000000000") this.transplantations.push(transplantations);
           }
         )
       }

@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.utils import timezone
 
 class EthereumInfo(models.Model):
     ethereum_address = models.CharField(max_length=64, unique=True)
@@ -18,6 +18,7 @@ class Proposal(models.Model):
     doctor_address = models.CharField(max_length=64, default="")
     patient_address = models.CharField(max_length=64, default="")
     order = models.PositiveIntegerField(default=1)
+    date_created = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):
         return f"{self.donor_address} - {self.order}"

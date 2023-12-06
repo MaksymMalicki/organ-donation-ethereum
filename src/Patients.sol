@@ -51,9 +51,30 @@ contract Patients{
         return _patient;
     }
 
-    function setPatientIsInTransplantation(address pa, bool state) public onlyDoctor{
-        Patient memory _patient = patientsMap[pa];
-        require(_patient.patientsDoctor == msg.sender, "Only patient's doctor get patient for transplantation");
+    function modifyPatient(address _patientAddress,string memory name,uint8 age,Urgency urgency,BloodType bloodType,bool isInTransplantation) public  returns(Patient memory){
+        Patient memory _patient = patientsMap[_patientAddress];
+        require(_patient.patientsDoctor == msg.sender || _patient.patientAddress == msg.sender || msg.sender == procurementOrganiser, "Only patient's doctor or patient can modify patient for transplantation");
+        _patient.age = age;
+        _patient.name = name;
+        _patient.urgency = urgency;
+        _patient.bloodType = bloodType;
+        _patient.isInTransplantation = isInTransplantation;
+        patientsMap[_patientAddress] = _patient;
+        uint256 index =0;
+        bool found = false;
+        for(uint256 i=0; i<patients.length; i++){
+            if(patients[i].patientAddress == _patientAddress){
+                index = i;
+                found = true;
+                break;
+            }
+        }
+        require(found, "Patient not found!");
+        patients[index] = _patient;
+        return _patient;
+    }
+
+    function setPatientIsInTransplantation(address pa, bool state) public{
         patientsMap[pa].isInTransplantation = state;
     }
 
@@ -70,6 +91,17 @@ contract Patients{
             }
         }
         return _patients;
+    }
+
+    function isPatient(address pa) public view returns(bool){
+        bool found = false;
+        for(uint256 i=0;i<patients.length;i++){
+            if(patients[i].patientAddress == pa){
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 
     function getPatientAddressById(uint256 id) public view returns (address){
@@ -183,7 +215,7 @@ contract Patients{
         }
     }
 
-    function compare(Patient memory patientA, Patient memory patientB) internal pure returns (int256) {
+    function compare(Patient memory patientA, Patient memory patientB) internal pure returns (int8) {
         if (patientA.urgency > patientB.urgency) {
             return 1;
         } else if (patientA.urgency < patientB.urgency) {

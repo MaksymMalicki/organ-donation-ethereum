@@ -1,5 +1,8 @@
-<mat-tab-group>
+<mat-tab-group class="p-4">
   <mat-tab label="Donors">
+    <div class="flex justify-end">
+      <input [(ngModel)]="donorsSearchTerm" class="my-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 my-4 p-2.5" placeholder="Search">
+    </div>
     <div class="flex mb-4">
       <div class="w-full p-4 block p-6 bg-white border border-gray-200 rounded-lg shadow">
         <table class="w-full bg-white border border-gray-300">
@@ -16,17 +19,17 @@
           </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let donor of donors" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
+            <tr *ngFor="let donor of filterDonors" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
               <td class="py-2 px-4 border-b text-center">{{donor.donorAddress}}</td>
               <td class="py-2 px-4 border-b text-center">{{donor.name}}</td>
               <td class="py-2 px-4 border-b text-center">{{donor.age}}</td>
               <td class="py-2 px-4 border-b text-center">{{donor.bloodType}}</td>
-              <td class="py-2 px-4 border-b text-center">{{donor.dateAdded}}</td>
+              <td class="py-2 px-4 border-b text-center">{{donor.dateAdded | date: 'hh:mm:ss dd.MM.yyyy'}}</td>
               <td class="py-2 px-4 border-b text-center">{{donor.isAlive}}</td>
               <td class="py-2 px-4 border-b text-center">{{donor.isKidneyGoodToTransplant}}</td>
               <td class="py-2 px-4 border-b text-center">
-                <button (click)='matchDonorWithPatients(donor)' *ngIf="!donor.isAlive">Match</button>
-                <button (click)="markDonorAsDead(donor)" *ngIf="donor.isAlive">Mark as dead</button>
+                <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-2.5 py-1.5 text-center"  (click)='matchDonorWithPatients(donor)' *ngIf="!donor.isAlive">Match</button>
+                <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-2.5 py-1.5 text-center"  (click)="markDonorAsDead(donor)" *ngIf="donor.isAlive">Mark as dead</button>
               </td>
             </tr>
           </tbody>
@@ -35,6 +38,9 @@
     </div>
   </mat-tab>
   <mat-tab label="Patients">
+    <div class="flex justify-end">
+      <input [(ngModel)]="patientsSearchTerm" class="my-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 my-4 p-2.5" placeholder="Search">
+    </div>
     <div class="flex mb-4">
       <div class="w-full p-4 block p-6 bg-white border border-gray-200 rounded-lg shadow">
         <table class="w-full bg-white border border-gray-300">
@@ -50,12 +56,12 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let patient of patients" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
+          <tr *ngFor="let patient of filterPatients" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
             <td class="py-2 px-4 border-b text-center">{{patient.patientAddress}}</td>
             <td class="py-2 px-4 border-b text-center">{{patient.name}}</td>
             <td class="py-2 px-4 border-b text-center">{{patient.age}}</td>
             <td class="py-2 px-4 border-b text-center">{{patient.bloodType}}</td>
-            <td class="py-2 px-4 border-b text-center">{{patient.dateAdded}}</td>
+            <td class="py-2 px-4 border-b text-center">{{patient.dateAdded | date: 'hh:mm:ss dd.MM.yyyy'}}</td>
             <td class="py-2 px-4 border-b text-center">{{patient.urgency}}</td>
             <td class="py-2 px-4 border-b text-center">{{patient.isInTransplantation}}</td>
           </tr>
@@ -65,6 +71,9 @@
     </div>
   </mat-tab>
   <mat-tab label="Doctors">
+    <div class="flex justify-end">
+      <input [(ngModel)]="doctorsSearchTerm" class="my-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 my-4 p-2.5" placeholder="Search">
+    </div>
     <div class="flex mb-4">
       <div class="w-full p-4 block p-6 bg-white border border-gray-200 rounded-lg shadow">
         <table class="w-full bg-white border border-gray-300">
@@ -78,7 +87,7 @@
           </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let doctor of doctors" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
+            <tr *ngFor="let doctor of filterDoctors" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
               <td class="py-2 px-4 border-b text-center">{{doctor.doctorAddress}}</td>
               <td class="py-2 px-4 border-b text-center">{{doctor.name}}</td>
               <td class="py-2 px-4 border-b text-center">{{doctor.age}}</td>
@@ -93,30 +102,32 @@
   <mat-tab label="New Doctor">
     <div class="flex-grow mb-4">
       <div class="w-1/2 p-4 block p-6 bg-white border border-gray-200 rounded-lg shadow mx-auto mt-5">
-
       <form [formGroup]="newDoctorForm" (ngSubmit)="onNewDoctorFormSubmit()" class="max-w-sm mx-auto">
-      <div class="mb-5">
-        <label for="doctorAddress" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Doctor address</label>
-        <input id="doctorAddress" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="doctorAddress" formControlName="doctorAddress" required>
-      </div>
-      <div class="mb-5">
-        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-        <input id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="name" formControlName="name" required>
-      </div>
-      <div class="mb-5">
-        <label for="age" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Age</label>
-        <input id="age" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="age" formControlName="age" required>
-      </div>
-      <div class="mb-5">
-        <label for="speciality" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Speciality</label>
-        <input id="speciality" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="speciality" formControlName="speciality" required>
-      </div>
-      <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Create doctor</button>
+        <div class="mb-5">
+          <label for="doctorAddress" class="block mb-2 text-sm font-medium text-gray-900">Doctor address</label>
+          <input id="doctorAddress" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="doctorAddress" formControlName="doctorAddress" required>
+        </div>
+        <div class="mb-5">
+          <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Name</label>
+          <input id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="name" formControlName="name" required>
+        </div>
+        <div class="mb-5">
+          <label for="age" class="block mb-2 text-sm font-medium text-gray-900">Age</label>
+          <input id="age" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="age" formControlName="age" required>
+        </div>
+        <div class="mb-5">
+          <label for="speciality" class="block mb-2 text-sm font-medium text-gray-900">Speciality</label>
+          <input id="speciality" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="speciality" formControlName="speciality" required>
+        </div>
+        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Create doctor</button>
       </form>
       </div>
     </div>
   </mat-tab>
   <mat-tab label="Transplantations">
+    <div class="flex justify-end">
+      <input [(ngModel)]="transplantationsSearchTerm" class="my-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 my-4 p-2.5" placeholder="Search">
+    </div>
     <div class="flex mb-4">
       <div class="w-full p-4 block p-6 bg-white border border-gray-200 rounded-lg shadow">
         <table class="w-full bg-white border border-gray-300">
@@ -134,15 +145,15 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let transplantation of transplantations" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b" (click)="navigateToTransplantationDetails(transplantation)">
+          <tr *ngFor="let transplantation of filterTransplantations" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b" (click)="navigateToTransplantationDetails(transplantation)">
             <td class="py-2 px-4 border-b text-center">{{transplantation.donor}}</td>
             <td class="py-2 px-4 border-b text-center">{{transplantation.patient}}</td>
             <td class="py-2 px-4 border-b text-center">{{transplantation.doctor}}</td>
             <td class="py-2 px-4 border-b text-center">{{transplantation.label}}</td>
-            <td class="py-2 px-4 border-b text-center">{{transplantation.timeCreated}}</td>
-            <td class="py-2 px-4 border-b text-center">{{transplantation.timeTransported}}</td>
-            <td class="py-2 px-4 border-b text-center">{{transplantation.timeTransplanted}}</td>
-            <td class="py-2 px-4 border-b text-center">{{transplantation.transplantationStatusConfirmedTime}}</td>
+            <td class="py-2 px-4 border-b text-center">{{transplantation.timeCreated | date: 'hh:mm:ss dd.MM.yyyy'}}</td>
+            <td class="py-2 px-4 border-b text-center">{{transplantation.timeTransported | date: 'hh:mm:ss dd.MM.yyyy'}}</td>
+            <td class="py-2 px-4 border-b text-center">{{transplantation.timeTransplanted | date: 'hh:mm:ss dd.MM.yyyy'}}</td>
+            <td class="py-2 px-4 border-b text-center">{{transplantation.transplantationStatusConfirmedTime | date: 'hh:mm:ss dd.MM.yyyy'}}</td>
             <td class="py-2 px-4 border-b text-center">{{transplantation.isSuccessful}}</td>
           </tr>
           </tbody>

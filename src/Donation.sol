@@ -5,16 +5,20 @@ import "./Structs.sol";
 import "./Patients.sol";
 import "./Doctors.sol";
 import "./Donors.sol";
-import "./Transplantation.sol";
 
 contract Donation{
     address public procurementOrganiser;
-    mapping (address => Transplantation) transplantationsMapping;
+    mapping (address => address[]) doctorsTransplantationsMapping;
     Patients patientsContract;
     Doctors doctorsContract;
     Donors donorsContract;
 
-    event DoctorNotified(address indexed doctor, address indexed patient, address indexed donor, uint256 timeCreated); 
+    mapping(address=>mapping(address=>Transplantation)) doctorsTransplantations;
+
+    event TransplantationCreated(address indexed doctor, address indexed patient, address indexed donor, string label, uint256 timeCreated);
+    event OrganTransported(address indexed doctor, address indexed patient, address indexed donor, string label, uint256 timeTransported);
+    event OrganTransplanted(address indexed doctor, address indexed patient, address indexed donor, string label, uint256 timeTransplanted);
+    event TransplantationStatsus(address indexed doctor, address indexed patient, address indexed donor, uint256 transplantationStatusConfirmedTime, bool isSuccessful);
 
     constructor(address _patientsContractAddress, address _doctorsContractAddress, address _donorsContractAddress) {
         procurementOrganiser = msg.sender;
@@ -55,7 +59,7 @@ contract Donation{
             patient = patientsContract.getPatientFromMapping(
                 patientsContract.getPatientAddressById(i)
             );
-            if (patient.bloodType == _donor.bloodType && patient.isInTransplantation == false) {
+            if (_checkBloodTypeCompatibility(patient.bloodType, _donor.bloodType) && patient.isInTransplantation == false) {
                 if(_matchedPatientsCounter <= 5){
                     _matchedPatients[_matchedPatientsCounter] = patient;
                     _matchedPatientsCounter++;
@@ -72,19 +76,52 @@ contract Donation{
         return _matchedPatients;
     }
 
-    function notifyDoctor(address pa, address _donorsAddress) public onlyProcurementOrganiser {
-        Patient memory _patient = patientsContract.getPatientFromMapping(pa);
-        emit DoctorNotified(_patient.patientsDoctor, _patient.patientAddress, _donorsAddress, block.timestamp);
+    function _checkBloodTypeCompatibility(BloodType patientBloodType, BloodType donorBloodType) internal pure returns(bool){
+        if(donorBloodType == BloodType.O && (patientBloodType == BloodType.A || patientBloodType == BloodType.B || patientBloodType == BloodType.AB || patientBloodType == BloodType.O)) return true;
+        else if(donorBloodType == BloodType.A && (patientBloodType == BloodType.A || patientBloodType == BloodType.AB)) return true;
+        else if(donorBloodType == BloodType.B && (patientBloodType == BloodType.B || patientBloodType == BloodType.AB)) return true;
+        else if(donorBloodType == BloodType.AB && (patientBloodType == BloodType.AB)) return true;
+        return false;
     }
 
     function startTransplantation(address pa, address da, string memory label) public onlyDoctor{
         patientsContract.setPatientIsInTransplantation(pa, true);
-        new Transplantation(msg.sender, da, pa, procurementOrganiser, label);
+        Transplantation memory t = Transplantation(da, pa, procurementOrganiser, msg.sender, label, 0, 0, 0, 0, false);
+        doctorsTransplantations[msg.sender][pa] = t;
+        emit TransplantationCreated(msg.sender, pa, da, label, block.timestamp);
     }
 
-    function getTransplantationByAddress(address ta) public view returns (Transplantation){
-        Transplantation _transplantation = transplantationsMapping[ta];
-        require(_transplantation.patient() == msg.sender || _transplantation.doctor() == msg.sender || procurementOrganiser == msg.sender, "Only the transplantation doctor, procurement organiser and patient or patient can view transplantation data");
-        return _transplantation;
+    modifier onlyTransplantationDoctor(address pa){
+        Transplantation memory t = doctorsTransplantations[msg.sender][pa];
+        require(t.doctor == msg.sender, "Only the transplantation doctor can perform this");
+        _;
+    }
+
+    function setOrganTransported(address pa) public onlyTransplantationDoctor(pa) {
+        doctorsTransplantations[msg.sender][pa].timeTransported = block.timestamp;
+        Transplantation memory t = doctorsTransplantations[msg.sender][pa];
+        emit OrganTransported(t.doctor, t.patient, t.donor, t.label, t.timeTransported);
+    }
+
+    function setOrganTransplanted(address pa) public onlyTransplantationDoctor(pa) {
+        doctorsTransplantations[msg.sender][pa].timeTransplanted = block.timestamp;
+        Transplantation memory t = doctorsTransplantations[msg.sender][pa];
+        emit OrganTransplanted(t.doctor, t.patient, t.donor, t.label, t.timeTransplanted);
+    }
+
+    function setTransplantationStatus(address pa) public onlyTransplantationDoctor(pa) {
+        doctorsTransplantations[msg.sender][pa].isSuccessful = true;
+        doctorsTransplantations[msg.sender][pa].transplantationStatusConfirmedTime = block.timestamp;
+        Transplantation memory t = doctorsTransplantations[msg.sender][pa];
+        emit TransplantationStatsus(t.doctor, t.patient, t.donor, t.transplantationStatusConfirmedTime, t.isSuccessful);
+    }
+
+    function getDoctorsTransplantations(address pa) public view onlyDoctor returns (Transplantation memory){
+        return doctorsTransplantations[msg.sender][pa];
+    }
+
+    function getPatientTransplantation() public view returns (Transplantation memory){
+        Patient memory p = patientsContract.getPatientFromMapping(msg.sender);
+        return doctorsTransplantations[p.patientsDoctor][msg.sender];
     }
 }

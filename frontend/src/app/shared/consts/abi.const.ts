@@ -1401,6 +1401,71 @@ export const donationAbi =
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "getPatientTransplantation",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "donor",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "patient",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "procurementOrganiser",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "doctor",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "label",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timeCreated",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timeTransported",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timeTransplanted",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "transplantationStatusConfirmedTime",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "isSuccessful",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct Transplantation",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",

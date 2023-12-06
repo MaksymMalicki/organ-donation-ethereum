@@ -43,10 +43,8 @@ class ValidateSignature(APIView):
             return Response({"error": "ethereum_address is not found"}, status=status.HTTP_404_NOT_FOUND)
         message = f"Nonce: {ethereum_info.nonce}"
 
-        # Convert the signature string to bytes
         signature_bytes = bytes.fromhex(signature[2:])
 
-        # Pass the original message and signature to recover_message
         decoded_address = web3.eth.account.recover_message(encode_defunct(text=message), signature=signature_bytes)
         is_valid_signature = decoded_address.lower() == ethereum_address.lower()
 

@@ -22,7 +22,7 @@ export class Web3Service {
       abi: donorsAbi
     },
     donationContract: {
-      address: '0xf4296FBBEA20DDe9009963CB11D2F3071c1fd2c9',
+      address: '0xdaBDb2C4224C8b98000A3FADe4EcB9a8F79995ee',
       abi: donationAbi
     },
   }

@@ -7,6 +7,6 @@ export interface Transplantation{
   timeCreated: number;
   timeTransported: number;
   timeTransplanted: number;
-  transplantationStatusConfirmedTime: boolean;
+  transplantationStatusConfirmedTime: number;
   isSuccessful: boolean;
 }

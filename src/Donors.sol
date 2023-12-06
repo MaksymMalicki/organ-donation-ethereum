@@ -23,13 +23,25 @@ contract Donors{
         return donors.length;
     }
 
-    function getDonorFromMapping(address pa) public view returns(Donor memory) {
-        Donor memory _donor = donorsMap[pa];
+    function getDonorFromMapping(address da) public view returns(Donor memory) {
+        Donor memory _donor = donorsMap[da];
         return _donor;
     }
 
     function getDonorAddressById(uint256 id) public view returns(address) {
         return donors[id];
+    }
+
+    function modifyDonor(address da, string memory name,uint8 age,BloodType bloodType,bool isAlive,bool isKidneyGoodToTransplant) public returns(Donor memory){
+        Donor memory donor = donorsMap[da];
+        require(msg.sender == procurementOrganiser || msg.sender == donor.donorAddress, "Only PO and donor can modify donors data");
+        donor.name = name;
+        donor.age = age;
+        donor.bloodType=bloodType;
+        donor.isAlive=isAlive;
+        donor.isKidneyGoodToTransplant=isKidneyGoodToTransplant;
+        donorsMap[da] = donor;
+        return donor;
     }
 
     function getDonorsAddressesArray() public view returns (address[] memory){
@@ -97,10 +109,6 @@ contract Donors{
         donorsMap[da] = _donor;
     }
 
-    function isDonor(address da) public view returns(Donor memory) {
-        return donorsMap[da];
-    }
-
     function removeDonor(address da) public {
         uint256 index = 0;
         bool found = false;
@@ -118,5 +126,16 @@ contract Donors{
         donors[index] = donors[donors.length - 1];
         donors.pop();
         delete donorsMap[da];
+    }
+
+    function isDonor(address da) public view returns(bool) {
+        bool found = false;
+        for(uint256 i=0;i<donors.length;i++){
+            if(donors[i] == da){
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 }

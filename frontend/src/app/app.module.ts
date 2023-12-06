@@ -18,6 +18,7 @@ import {HttpClientModule} from "@angular/common/http";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTabsModule} from "@angular/material/tabs";
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
+import { BigIntToNumberPipe } from './shared/pipes/big-int-to-number.pipe';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { NavbarComponent } from './shared/components/navbar/navbar.component';
     DonorComponent,
     DoctorComponent,
     NavbarComponent,
+    BigIntToNumberPipe,
   ],
     imports: [
         BrowserModule,

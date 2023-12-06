@@ -1,17 +1,15 @@
 <nav class="bg-grey-200 border-gray-200">
   <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
-    <a href="https://flowbite.com" class="flex items-center space-x-3 rtl:space-x-reverse">
-      <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
+    <a class="flex items-center space-x-3 rtl:space-x-reverse">
       <span class="self-center text-2xl font-semibold whitespace-nowrap">Organ donation system</span>
     </a>
     <div class="flex items-center space-x-6 rtl:space-x-reverse">
-      <a href="tel:5541251234" class="text-sm  text-gray-500 hover:underline">{{role}}</a>
       <ng-container *ngIf="!role; else notLoggedIn">
-        <a [routerLink]="'/login'" class="text-sm  text-blue-600 hover:underline">Login</a>
-
+        <button [routerLink]="'/login'" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Login</button>
       </ng-container>
       <ng-template #notLoggedIn>
-        <a (click)="authService.logout()" class="text-sm  text-blue-600 hover:underline">Logout</a>
+        <a class="text-sm  text-gray-500">Welcome, {{role}}!</a>
+        <button (click)="authService.logout()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Logout</button>
       </ng-template>
     </div>
   </div>

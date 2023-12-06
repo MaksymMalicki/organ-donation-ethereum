@@ -1,5 +1,8 @@
-<mat-tab-group>
+<mat-tab-group class="p-4">
   <mat-tab label="Patients">
+    <div class="flex justify-end">
+      <input [(ngModel)]="patientsSearchTerm" class="my-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 my-4 p-2.5" placeholder="Search">
+    </div>
     <div class="flex mb-4">
       <div class="w-full p-4 block p-6 bg-white border border-gray-200 rounded-lg shadow">
         <table class="w-full bg-white border border-gray-300">
@@ -11,21 +14,25 @@
               <th class="py-2 px-4 border-b text-center">Blood type</th>
               <th class="py-2 px-4 border-b text-center">Date added</th>
               <th class="py-2 px-4 border-b text-center">Urgency</th>
-              <th class="py-2 px-4 border-b text-center">isInTransplantation</th>
+              <th class="py-2 px-4 border-b text-center">Transplantation</th>
               <th class="py-2 px-4 border-b text-center">Action</th>
             </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let patient of patients" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
+          <tr *ngFor="let patient of filterPatients" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
             <td class="py-2 px-4 border-b text-center">{{patient.patientAddress}}</td>
-            <td class="py-2 px-4 border-b text-center"><input value="{{patient.name}}" [(ngModel)]="patient.name"/></td>
-            <td class="py-2 px-4 border-b text-center"><input value="{{patient.age}}" [(ngModel)]="patient.age"/></td>
-            <td class="py-2 px-4 border-b text-center"><input value="{{patient.bloodType}}" [(ngModel)]="patient.bloodType"/></td>
-            <td class="py-2 px-4 border-b text-center">{{patient.dateAdded}}</td>
-            <td class="py-2 px-4 border-b text-center"><input value="{{patient.urgency}}" [(ngModel)]="patient.urgency"/></td>
+            <td class="py-2 px-4 border-b text-center"><input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="{{patient.name}}" [(ngModel)]="patient.name"/></td>
+            <td class="py-2 px-4 border-b text-center"><input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="{{patient.age}}" [(ngModel)]="patient.age"/></td>
+            <td class="py-2 px-4 border-b text-center"><input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="{{patient.bloodType}}" [(ngModel)]="patient.bloodType"/></td>
+            <td class="py-2 px-4 border-b text-center">{{patient.dateAdded | bigIntToNumber | date: 'hh:mm:ss dd.MM.yyyy'}}</td>
+            <td class="py-2 px-4 border-b text-center"><input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="{{patient.urgency}}" [(ngModel)]="patient.urgency"/></td>
             <td class="py-2 px-4 border-b text-center">{{patient.isInTransplantation}}</td>
-            <button (click)="modifyPatientData(patient)">Submit</button>
-            <button (click)="deletePatient(patient)">Delete</button>
+            <td class="py-2 px-4 border-b text-center">
+              <div class="flex flex-row items-center gap-1">
+                <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-2.5 py-1.5 text-center" (click)="modifyPatientData(patient)">Save</button>
+                <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-2.5 py-1.5 text-center" (click)="deletePatient(patient)">Delete</button>
+              </div>
+            </td>
           </tr>
           </tbody>
         </table>
@@ -57,22 +64,43 @@
           <label for="urgency" class="block mb-2 text-sm font-medium text-gray-900">Urgency</label>
           <input id="urgency" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Urgency" formControlName="urgency" required>
         </div>
-        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Create doctor</button>
+        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Register patient</button>
       </form>
     </div>
     </div>
   </mat-tab>
   <mat-tab label="Proposals">
-    <div *ngFor="let proposal of proposals">
-      <div>{{proposal.donor_address}}</div>
-      <div>{{proposal.patient_address}}</div>
-      <div>
-        <button (click)="acceptProposal(proposal)">Accept</button>
-        <button (click)="rejectProposal(proposal)">Reject</button>
+    <div class="flex justify-end">
+      <input [(ngModel)]="proposalsSearchTerm" class="my-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 my-4 p-2.5" placeholder="Search">
+    </div>
+    <div class="flex flex-wrap flex-row gap-3 p-4">
+      <div class="max-w-sm rounded overflow-hidden shadow-lg border-2 border-gray-200" *ngFor="let proposal of filterProposals">
+        <div class="px-6 py-4">
+          <div class="font-bold text-xl mb-2">Proposal</div>
+          <div class="flex flex-col">
+            <div class="mr-2">
+              <div>Donor address: {{proposal.donor_address}}</div>
+            </div>
+            <div>
+              <div>Patient address: {{proposal.patient_address}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="px-6 py-4">
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" (click)="acceptProposal(proposal)">
+            Accept
+          </button>
+          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2" (click)="rejectProposal(proposal)">
+            Reject
+          </button>
+        </div>
       </div>
     </div>
   </mat-tab>
   <mat-tab label="Transplantations">
+    <div class="flex justify-end">
+      <input [(ngModel)]="transplantationsSearchTerm" class="my-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 my-4 p-2.5" placeholder="Search">
+    </div>
     <div class="flex mb-4">
       <div class="w-full p-4 block p-6 bg-white border border-gray-200 rounded-lg shadow">
         <table class="w-full bg-white border border-gray-300">
@@ -90,17 +118,17 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let transplantation of transplantations" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
+          <tr *ngFor="let transplantation of filterTransplantation" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b">
             <td class="py-2 px-4 border-b text-center">{{transplantation.donor}}</td>
             <td class="py-2 px-4 border-b text-center">{{transplantation.patient}}</td>
             <td class="py-2 px-4 border-b text-center">{{transplantation.doctor}}</td>
             <td class="py-2 px-4 border-b text-center">{{transplantation.label}}</td>
             <td class="py-2 px-4 border-b text-center">
-              {{transplantation.timeCreated}}
+              {{transplantation.timeCreated | bigIntToNumber | date: 'hh:mm:ss dd.MM.yyyy'}}
             </td>
             <td class="py-2 px-4 border-b text-center">
               <ng-container *ngIf="transplantation.timeTransported != 0;else timeTransportedNotSet">
-                {{transplantation.timeTransported}}
+                {{transplantation.timeTransported | bigIntToNumber | date: 'hh:mm:ss dd.MM.yyyy'}}
               </ng-container>
               <ng-template #timeTransportedNotSet>
                 <button (click)="setTimeTransported(transplantation)">Set time transported</button>
@@ -108,17 +136,17 @@
             </td>
             <td class="py-2 px-4 border-b text-center">
               <ng-container *ngIf="transplantation.timeTransplanted != 0;else timeTransplantedNotSet">
-                {{transplantation.timeTransplanted}}
+                {{transplantation.timeTransplanted | bigIntToNumber | date: 'hh:mm:ss dd.MM.yyyy'}}
               </ng-container>
               <ng-template #timeTransplantedNotSet>
                 <button (click)="setTimeTransplanted(transplantation)">Set time transplanted</button>
               </ng-template>
             </td>
             <td class="py-2 px-4 border-b text-center">
-              <ng-container>
-                {{transplantation.transplantationStatusConfirmedTime}}
+              <ng-container *ngIf="transplantation.transplantationStatusConfirmedTime != 0;else transplantationStatusConfirmedTime">
+                {{transplantation.transplantationStatusConfirmedTime | bigIntToNumber | date: 'hh:mm:ss dd.MM.yyyy'}}
               </ng-container>
-              <ng-template #timeTransportedNotSet>
+              <ng-template #transplantationStatusConfirmedTime>
                 <button (click)="setTimeConfirmed(transplantation)">Set time transported</button>
               </ng-template>
             </td>

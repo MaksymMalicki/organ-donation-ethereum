@@ -34,6 +34,7 @@ export class PatientComponent implements OnInit {
        this.patientDataForm.patchValue(this.patient);
       }
     );
+    this.getPatientTransplantation();
   }
 
   submitPatientDataForm() {
@@ -47,6 +48,27 @@ export class PatientComponent implements OnInit {
     ).call({from: this.authService.address})).subscribe(
       (patient) => {
         this.patient = patient as Patient;
+      }
+    );
+  }
+
+  submitPatientResignation() {
+    console.log(this.authService.address)
+    from(this.web3Service.patientsContract.methods.removeByAddress(this.authService.address).send({from: this.authService.address})).subscribe(
+      () => {
+        this.authService.logout();
+      }
+    );
+  }
+
+  getPatientTransplantation() {
+    from(this.web3Service.donationContract.methods.getPatientTransplantation().call({from: this.authService.address})).subscribe(
+      (transplantation: any) => {
+        if(transplantation.patient == "0x0000000000000000000000000000000000000000"){
+          this.transplantation = null;
+        } else {
+          this.transplantation = transplantation as Transplantation;
+        }
       }
     );
   }

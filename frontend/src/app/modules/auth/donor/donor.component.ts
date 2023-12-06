@@ -33,13 +33,13 @@ export class DonorComponent implements OnInit {
     from(this.web3Service.donorsContract.methods.getDonorFromMapping(this.authService.address).call()).subscribe(
       (donor: any) => {
         console.log(donor);
-        this.donor = this.parseChainDataToPatient(donor);
+        this.donor = this.parseChainDataToDonor(donor);
         this.donorDataForm.patchValue(this.donor);
       }
     );
   }
 
-  parseChainDataToPatient(donorData): Donor{
+  parseChainDataToDonor(donorData): Donor{
     return {
       donorAddress: donorData.donorAddress,
       name: donorData.name,
@@ -65,6 +65,14 @@ export class DonorComponent implements OnInit {
     ).send(transactionObject)).subscribe(
       (donor) => {
         this.getDonorData();
+      }
+    );
+  }
+
+  submitDonorResignation() {
+    from(this.web3Service.donorsContract.methods.removeDonor().send({from: this.authService.address})).subscribe(
+      ()=>{
+        this.authService.logout();
       }
     );
   }

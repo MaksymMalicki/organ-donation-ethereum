@@ -7,6 +7,7 @@ import {Web3Service} from "../../../shared/services/web3.service";
 import {AuthService} from "../auth.service";
 import {FormBuilder} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
+import {Transplantation} from "../../../shared/interfaces/transplantation.interface";
 
 @Component({
   selector: 'app-organ-procurement-organiser',
@@ -18,8 +19,13 @@ export class OrganProcurementOrganiserComponent implements OnInit {
   doctors: Doctor[] = [];
   patients: Patient[] = [];
   donors: Donor[] = [];
-  transplantations: any;
+  transplantations: Transplantation[] = [];
   newDoctorForm: any;
+
+  patientsSearchTerm: string = "";
+  donorsSearchTerm: string = "";
+  doctorsSearchTerm: string = "";
+  transplantationsSearchTerm: string = "";
 
   constructor(
     private web3Service: Web3Service,
@@ -50,7 +56,7 @@ export class OrganProcurementOrganiserComponent implements OnInit {
             } as Patient;
           }
         );
-        console.log(this.patients);
+        this.patients = this.patients.filter(patient => patient.patientAddress !== "0x0000000000000000000000000000000000000000");
       }
     );
     from(this.web3Service.donorsContract.methods.getAllDonors().call({from:this.authService.address})).subscribe(
@@ -67,6 +73,7 @@ export class OrganProcurementOrganiserComponent implements OnInit {
             } as Donor;
           }
         );
+        this.donors = this.donors.filter(donor => donor.donorAddress !== "0x0000000000000000000000000000000000000000");
       }
     );
     from(this.web3Service.doctorsContract.methods.getAllDoctors().call({from:this.authService.address})).subscribe(
@@ -81,7 +88,40 @@ export class OrganProcurementOrganiserComponent implements OnInit {
             } as Doctor;
           }
         );
+        this.doctors = this.doctors.filter(doctor => doctor.doctorAddress !== "0x0000000000000000000000000000000000000000");
       }
+    );
+  }
+
+  get filterPatients(): Patient[] {
+    return this.patients.filter(item =>
+      Object.values(item).some(value =>
+        typeof value === 'string' && value.toLowerCase().includes(this.patientsSearchTerm.toLowerCase())
+      )
+    );
+  }
+
+  get filterDonors(): Donor[] {
+    return this.donors.filter(item =>
+      Object.values(item).some(value =>
+        typeof value === 'string' && value.toLowerCase().includes(this.donorsSearchTerm.toLowerCase())
+      )
+    );
+  }
+
+  get filterDoctors(): Doctor[] {
+    return this.doctors.filter(item =>
+      Object.values(item).some(value =>
+        typeof value === 'string' && value.toLowerCase().includes(this.doctorsSearchTerm.toLowerCase())
+      )
+    );
+  }
+
+  get filterTransplantations(): Transplantation[] {
+    return this.transplantations.filter(item =>
+      Object.values(item).some(value =>
+        typeof value === 'string' && value.toLowerCase().includes(this.transplantationsSearchTerm.toLowerCase())
+      )
     );
   }
 

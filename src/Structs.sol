@@ -27,13 +27,18 @@ struct Doctor {
     address doctorAddress;
     string name;
     uint8 age;
+    string speciality;
 }
 
-struct TransplantationProposal {
-    address doctor;
-    address patient;
+struct Transplantation{
     address donor;
+    address patient;
+    address procurementOrganiser;
+    address doctor;
     string label;
-    uint256 timeCreated;
-    bool isDoctorNotified;
+    uint256  timeCreated;
+    uint256  timeTransported;
+    uint256  timeTransplanted;
+    uint256  transplantationStatusConfirmedTime;
+    bool isSuccessful;
 }

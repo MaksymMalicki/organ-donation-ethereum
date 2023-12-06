@@ -19,7 +19,7 @@ contract Doctors{
         _;
     }
 
-    function registerDoctor(address _doctorAddress, string memory _name, uint8 _age) public onlyProcurementOrganiser {
+    function registerDoctor(address _doctorAddress, string memory _name, uint8 _age, string memory speciality) public onlyProcurementOrganiser {
         uint256 len = doctors.length;
         bool found = false;
         for(uint256 i=0; i<len; i++){
@@ -32,7 +32,8 @@ contract Doctors{
         Doctor memory doctor = Doctor(
             _doctorAddress,
             _name,
-            _age
+            _age,
+            speciality
         );
         doctors.push(
             _doctorAddress
@@ -44,8 +45,8 @@ contract Doctors{
         return doctors.length;
     }
 
-    function getDoctorFromMapping(address pa) public view returns(Doctor memory) {
-        Doctor memory _doctor = doctorsMap[pa];
+    function getDoctorFromMapping(address da) public view returns(Doctor memory) {
+        Doctor memory _doctor = doctorsMap[da];
         require(_doctor.doctorAddress == msg.sender || procurementOrganiser == msg.sender, "Only the doctor or procurement organiser can view doctor data");
         return _doctor;
     }
@@ -70,7 +71,7 @@ contract Doctors{
         return allDoctors;
     }
 
-    function removePatient(address da) public {
+    function removeDoctor(address da) public onlyProcurementOrganiser {
         uint256 index = 0;
         bool found = false;
         Doctor memory _doctor = doctorsMap[da];
@@ -87,5 +88,16 @@ contract Doctors{
         doctors[index] = doctors[doctors.length - 1];
         doctors.pop();
         delete doctorsMap[da];
+    }
+
+    function isDoctor(address da) public view returns (bool) {
+        bool found = false;
+        for(uint256 i=0;i<doctors.length;i++){
+            if(doctors[i] == da){
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 }

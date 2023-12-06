@@ -183,3 +183,22 @@
 12:12:25.180635 version@stat F·[1 1] S·435KiB[435KiB 858B] Sc·[0.25 0.00]
 12:12:25.184510 memdb@flush committed F·1 T·42.726916ms
 12:12:25.195835 journal@remove removed @40
+=============== Dec 3, 2023 (CET) ===============
+12:14:55.487684 memdb@flush N·56744 S·3MiB
+12:14:55.524985 memdb@flush created L0@46 N·56744 S·426KiB "n:z..:v4,v275156":"n:\xf6..ong,v218527"
+12:14:55.525286 version@stat F·[2 1] S·862KiB[861KiB 858B] Sc·[0.50 0.00]
+12:14:55.533567 memdb@flush committed F·1 T·44.922708ms
+12:14:55.545210 journal@remove removed @43
+12:15:11.031769 table@compaction L0·2 -> L1·1 S·862KiB Q·275250
+12:15:11.075386 table@build created L1@47 N·17 S·843B "loc..seq,v170249":"version,v1"
+12:15:11.075749 version@stat F·[0 1] S·843B[0B 843B] Sc·[0.00 0.00]
+12:15:11.079613 table@compaction committed F-2 S-861KiB Ke·0 D·112329 T·47.2555ms
+12:15:11.079992 table@remove removed @46
+12:15:11.080227 table@remove removed @44
+12:15:11.081143 table@remove removed @42
+=============== Dec 5, 2023 (CET) ===============
+17:22:03.036143 memdb@flush N·51609 S·3MiB
+17:22:03.075287 memdb@flush created L0@49 N·51609 S·460KiB "loc..seq,v317250":"n:\xf6..ong,v275214"
+17:22:03.075575 version@stat F·[1 1] S·461KiB[460KiB 843B] Sc·[0.25 0.00]
+17:22:03.078890 memdb@flush committed F·1 T·41.963916ms
+17:22:03.091859 journal@remove removed @45
