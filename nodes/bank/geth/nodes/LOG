@@ -239,3 +239,22 @@
 12:52:57.798564 version@stat F·[1 1] S·455KiB[454KiB 871B] Sc·[0.25 0.00]
 12:52:57.801936 memdb@flush committed F·1 T·57.850791ms
 12:52:57.817057 journal@remove removed @53
+=============== Dec 7, 2023 (CET) ===============
+01:53:26.848360 table@compaction L0·1 -> L1·1 S·455KiB Q·360517
+01:53:26.861059 table@build created L1@58 N·17 S·900B "loc..seq,v323330":"version,v1"
+01:53:26.861978 version@stat F·[0 1] S·900B[0B 900B] Sc·[0.00 0.00]
+01:53:26.876535 table@compaction committed F-1 S-454KiB Ke·0 D·52469 T·26.844459ms
+01:53:26.877522 table@remove removed @57
+01:53:26.878185 table@remove removed @55
+=============== Dec 8, 2023 (CET) ===============
+18:20:17.088449 memdb@flush N·48282 S·3MiB
+18:20:17.132602 memdb@flush created L0@60 N·48282 S·479KiB "n:@..:v4,v375768":"n:\xb5..ong,v327530"
+18:20:17.132672 version@stat F·[1 1] S·480KiB[479KiB 900B] Sc·[0.25 0.00]
+18:20:17.136391 memdb@flush committed F·1 T·47.115834ms
+18:20:17.151186 journal@remove removed @56
+18:20:29.319252 table@compaction L0·1 -> L1·1 S·480KiB Q·375816
+18:20:29.340544 table@build created L1@61 N·17 S·901B "loc..seq,v323330":"version,v1"
+18:20:29.340876 version@stat F·[0 1] S·901B[0B 901B] Sc·[0.00 0.00]
+18:20:29.343938 table@compaction committed F-1 S-479KiB Ke·0 D·48282 T·24.006876ms
+18:20:29.344529 table@remove removed @60
+18:20:29.345728 table@remove removed @58

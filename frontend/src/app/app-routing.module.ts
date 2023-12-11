@@ -12,6 +12,7 @@ import {isProcurementOrganiser} from "./shared/guards/is-procurement-organiser.g
 import {IsDoctorGuard} from "./shared/guards/is-doctor.guard";
 import {IsDonorGuard} from "./shared/guards/is-donor.guard";
 import {IsPatientGuard} from "./shared/guards/is-patient.guard";
+import {DonorRegisterComponent} from "./modules/unauth/donor-register/donor-register.component";
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+  },
+  {
+    path: 'register',
+    component: DonorRegisterComponent,
   },
   {
     path: 'organ-procurement-organiser',

@@ -66,6 +66,18 @@ export class PatientComponent implements OnInit {
       (transplantation: any) => {
         if(transplantation.patient == "0x0000000000000000000000000000000000000000"){
           this.transplantation = null;
+          this.transplantation = {
+            patient: this.authService.address,
+            doctor: '0x7600De8a86A992292b9c06C743CC695cE06C04A4',
+            donor: '0x3f8512E0a5883e3410405C02e74A2282DbDF5A71',
+            procurementOrganiser: '0xB5Da00630Ca5fdE4d9cED2fcdA0C607cE198F159',
+            label: 'Transplantacja 1',
+            timeCreated: (new Date()).getTime(),
+            timeTransplanted: 0,
+            timeTransported: 0,
+            transplantationStatusConfirmedTime: 0,
+            isSuccessful: false,
+          }
         } else {
           this.transplantation = transplantation as Transplantation;
         }

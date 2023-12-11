@@ -1,14 +1,21 @@
 <nav class="bg-grey-200 border-gray-200">
   <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
-    <a class="flex items-center space-x-3 rtl:space-x-reverse">
+    <a class="flex items-center space-x-3 rtl:space-x-reverse" [routerLink]="'/'">
+      <img src="assets/icons/healthcare.png" alt="logo" class="w-10 h-10">
       <span class="self-center text-2xl font-semibold whitespace-nowrap">Organ donation system</span>
     </a>
     <div class="flex items-center space-x-6 rtl:space-x-reverse">
       <ng-container *ngIf="!role; else notLoggedIn">
         <button [routerLink]="'/login'" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Login</button>
+        <button [routerLink]="'/register'" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Register</button>
       </ng-container>
       <ng-template #notLoggedIn>
         <a class="text-sm  text-gray-500">Welcome, {{role}}!</a>
+        <img *ngIf="role=='patient'" src="assets/icons/patient.png" alt="user" class="w-10 h-10">
+        <img *ngIf="role=='donor'"  src="assets/icons/donor.png" alt="user" class="w-10 h-10">
+        <img *ngIf="role=='doctor'"  src="assets/icons/doctor.png" alt="user" class="w-10 h-10">
+        <img *ngIf="role=='procurementOrganiser'"  src="assets/icons/procurement-organiser.png" alt="user" class="w-10 h-10">
+
         <button (click)="authService.logout()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Logout</button>
       </ng-template>
     </div>

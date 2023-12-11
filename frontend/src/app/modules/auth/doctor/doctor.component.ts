@@ -7,6 +7,18 @@ import {from} from "rxjs";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 
+const patientsMock: Patient[] = [
+  {patientAddress: '0x4E398a277Bcd947d3397799433DE98950773b683', name: 'John Doe', age: 22, urgency: 3, bloodType: '0', dateAdded: (new Date()).getTime() - 2000000, isInTransplantation: false},
+  {patientAddress: '0x7600De8a86A992292b9c06C743CC695cE06C04A4', name: 'John Doe', age: 34, urgency: 2, bloodType: 'AB', dateAdded: (new Date()).getTime() - 2500000, isInTransplantation: false},
+  {patientAddress: '0x4E398a277Bcd947d3397799433DE98950773b683', name: 'John Doe', age: 20, urgency: 1, bloodType: 'A', dateAdded: (new Date()).getTime() - 3000000, isInTransplantation: false},
+  {patientAddress: '0x5dD16bA687324A6792A57DaD9298f77F2f6214fC', name: 'John Doe', age: 12, urgency: 1, bloodType: 'B', dateAdded: (new Date()).getTime() - 4000000, isInTransplantation: false},
+  {patientAddress: '0xcDac861F0349903B22Cc55c58d55A6BBa3bBfdf5', name: 'John Doe', age: 75, urgency: 1, bloodType: 'B', dateAdded: (new Date()).getTime() - 5000000, isInTransplantation: false},
+];
+
+const transplantationsMock: Transplantation[] = [
+  {procurementOrganiser: '0xB5Da00630Ca5fdE4d9cED2fcdA0C607cE198F159', patient: '0x4E398a277Bcd947d3397799433DE98950773b683', donor: '0x3f8512E0a5883e3410405C02e74A2282DbDF5A71', doctor: '0x7600De8a86A992292b9c06C743CC695cE06C04A4', timeCreated: (new Date()).getTime() - 1500000, timeTransported: 0, timeTransplanted: 0, transplantationStatusConfirmedTime: 0, isSuccessful: false, label: "Transplantacja 1"},
+  {procurementOrganiser: '0xB5Da00630Ca5fdE4d9cED2fcdA0C607cE198F159', patient: '0x5dD16bA687324A6792A57DaD9298f77F2f6214fC', donor: '0x06f009c3b6E013154A2D76Bf6D6B904a1d66550F', doctor: '0x4E398a277Bcd947d3397799433DE98950773b683', timeCreated: (new Date()).getTime() - 2100000, timeTransported: 0, timeTransplanted: 0, transplantationStatusConfirmedTime: 0, isSuccessful: false, label: "Transplantacja 3"},
+];
 @Component({
   selector: 'app-doctor',
   templateUrl: './doctor.component.html',
@@ -39,6 +51,7 @@ export class DoctorComponent implements OnInit {
     from(this.web3Service.patientsContract.methods.getDoctorsPatients().call({from: this.authService.address})).subscribe(
       (patients: any) => {
         this.patients = patients.filter(patient => patient.patientAddress !== "0x0000000000000000000000000000000000000000")
+        this.patients = patientsMock;
         this.getAllDoctorTransplantations();
       }
     );
@@ -156,7 +169,8 @@ export class DoctorComponent implements OnInit {
           }
         )
       }
-    )
+    );
+    this.transplantations = transplantationsMock;
   }
 
   setTimeTransported(transplantation: Transplantation) {

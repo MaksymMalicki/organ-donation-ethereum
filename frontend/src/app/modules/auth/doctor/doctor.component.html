@@ -30,7 +30,7 @@
             <td class="py-2 px-4 border-b text-center">
               <div class="flex flex-row items-center gap-1">
                 <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-2.5 py-1.5 text-center" (click)="modifyPatientData(patient)">Save</button>
-                <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-2.5 py-1.5 text-center" (click)="deletePatient(patient)">Delete</button>
+                <button class="text-white bg-red-500 hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-2.5 py-1.5 text-center" (click)="deletePatient(patient)">Delete</button>
               </div>
             </td>
           </tr>
@@ -90,7 +90,7 @@
           <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" (click)="acceptProposal(proposal)">
             Accept
           </button>
-          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2" (click)="rejectProposal(proposal)">
+          <button class="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 rounded ml-2" (click)="rejectProposal(proposal)">
             Reject
           </button>
         </div>

@@ -41,7 +41,10 @@ export class Web3Service {
     } else {
       console.error('MetaMask is not installed');
     }
-    this.patientsContract = new this.web3.eth.Contract(this.config.patientsContract.abi, this.config.patientsContract.address);
+    this.patientsContract = new this.web3.eth.Contract(
+      this.config.patientsContract.abi,
+      this.config.patientsContract.address
+    );
     this.doctorsContract = new this.web3.eth.Contract(this.config.doctorsContract.abi, this.config.doctorsContract.address);
     this.donorsContract = new this.web3.eth.Contract(this.config.donorsContract.abi, this.config.donorsContract.address);
     this.donationContract = new this.web3.eth.Contract(this.config.donationContract.abi, this.config.donationContract.address);

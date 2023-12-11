@@ -172,3 +172,15 @@
 13:04:36.860491 table@remove removed @41
 13:04:36.860856 table@remove removed @39
 13:04:36.861886 table@remove removed @37
+=============== Dec 9, 2023 (CET) ===============
+06:08:23.616714 memdb@flush N·48358 S·3MiB
+06:08:23.662343 memdb@flush created L0@44 N·48358 S·480KiB "n:@..:v4,v376023":"n:\xf6..ong,v327698"
+06:08:23.662432 version@stat F·[1 1] S·481KiB[480KiB 888B] Sc·[0.25 0.00]
+06:08:23.667084 memdb@flush committed F·1 T·49.526542ms
+06:08:23.682149 journal@remove removed @40
+07:15:23.548511 table@compaction L0·1 -> L1·1 S·481KiB Q·376067
+07:15:23.565877 table@build created L1@45 N·17 S·894B "loc..seq,v323168":"version,v1"
+07:15:23.566186 version@stat F·[0 1] S·894B[0B 894B] Sc·[0.00 0.00]
+07:15:23.570618 table@compaction committed F-1 S-480KiB Ke·0 D·48358 T·21.663917ms
+07:15:23.571100 table@remove removed @44
+07:15:23.571757 table@remove removed @42

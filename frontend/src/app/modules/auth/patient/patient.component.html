@@ -20,19 +20,24 @@
             <input [value]="patient.bloodType" formControlName="bloodType" id="bloodType" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Blood type" required>
           </div>
           <div class="mb-5">Is in transplantation: {{patient.isInTransplantation? 'Yes' : 'No'}}</div>
-          <button type="submit" class="mr-5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Save patient data doctor</button>
-          <button (click)="submitPatientResignation()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Resign</button>
+          <button type="submit" class="mr-5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Save patient data</button>
+          <button (click)="submitPatientResignation()" class="text-white bg-red-500 hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Resign</button>
         </form>
       </div>
     </div>
   </mat-tab>
   <mat-tab label="Transplantation data">
-    <div *ngIf="!!transplantation">
-      <span>{{transplantation.label}}</span>
-      <span>{{transplantation.timeCreated}}</span>
-      <span>{{transplantation.timeTransported}}</span>
-      <span>{{transplantation.timeTransplanted}}</span>
-      <span>{{transplantation.transplantationStatusConfirmedTime}}</span>
+    <div *ngIf="!!transplantation" class="w-96 my-4 bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
+      <div class="flex flex-col">
+        <span class="text-lg font-semibold mb-2">{{transplantation.label}}</span>
+        <span class="text-gray-600">Time created: {{transplantation.timeCreated ? (transplantation.timeCreated | date: 'hh:mm:ss dd.MM.yyyy') : '--'}}</span>
+        <span class="text-gray-600">Time transported: {{transplantation.timeTransported ? (transplantation.timeTransported | date: 'hh:mm:ss dd.MM.yyyy') : '--'}}</span>
+        <span class="text-gray-600">Time transplanted: {{transplantation.timeTransplanted ? (transplantation.timeTransplanted | date: 'hh:mm:ss dd.MM.yyyy') : '--'}}</span>
+        <span class="text-gray-600">Transplantation status confirmed: {{transplantation.transplantationStatusConfirmedTime ? (transplantation.transplantationStatusConfirmedTime | date: 'hh:mm:ss dd.MM.yyyy') : '--'}}</span>
+        <span class="text-gray-600">Transplantation status: {{ transplantation.transplantationStatusConfirmedTime ? (transplantation.isSuccessful ? 'Successful' : 'Failed') : '--'}}</span>
+
+      </div>
+      <img src="assets/icons/patient.png" alt="Icon" class="w-20 h-20 object-cover rounded-full">
     </div>
   </mat-tab>
 </mat-tab-group>

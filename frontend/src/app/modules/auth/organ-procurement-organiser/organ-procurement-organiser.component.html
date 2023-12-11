@@ -14,7 +14,7 @@
             <th class="py-2 px-4 border-b text-center">Blood type</th>
             <th class="py-2 px-4 border-b text-center">Date added</th>
             <th class="py-2 px-4 border-b text-center">Is alive</th>
-            <th class="py-2 px-4 border-b text-center">Kidney OK</th>
+            <th class="py-2 px-4 border-b text-center">Organ OK</th>
             <th class="py-2 px-4 border-b text-center">Action</th>
           </tr>
           </thead>
@@ -92,7 +92,9 @@
               <td class="py-2 px-4 border-b text-center">{{doctor.name}}</td>
               <td class="py-2 px-4 border-b text-center">{{doctor.age}}</td>
               <td class="py-2 px-4 border-b text-center">{{doctor.speciality}}</td>
-              <td class="py-2 px-4 border-b text-center"><button (click)="removeDoctor(doctor)">Usun</button></td>
+              <td class="py-2 px-4 border-b text-center">
+                <button class="text-white bg-red-500 hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-blue-300 small rounded-lg text-sm w-full sm:w-auto px-5 py-1 text-center" (click)="removeDoctor(doctor)">Remove</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -146,15 +148,15 @@
           </thead>
           <tbody>
           <tr *ngFor="let transplantation of filterTransplantations" class="text-xs text-gray-700 odd:bg-white even:bg-gray-100 border-b" (click)="navigateToTransplantationDetails(transplantation)">
-            <td class="py-2 px-4 border-b text-center">{{transplantation.donor}}</td>
-            <td class="py-2 px-4 border-b text-center">{{transplantation.patient}}</td>
-            <td class="py-2 px-4 border-b text-center">{{transplantation.doctor}}</td>
+            <td class="break-words w-16 py-2 px-4 border-b text-center">{{transplantation.donor}}</td>
+            <td class="break-words w-16 py-2 px-4 border-b text-center">{{transplantation.patient}}</td>
+            <td class="break-words w-16 py-2 px-4 border-b text-center">{{transplantation.doctor}}</td>
             <td class="py-2 px-4 border-b text-center">{{transplantation.label}}</td>
-            <td class="py-2 px-4 border-b text-center">{{transplantation.timeCreated | date: 'hh:mm:ss dd.MM.yyyy'}}</td>
-            <td class="py-2 px-4 border-b text-center">{{transplantation.timeTransported | date: 'hh:mm:ss dd.MM.yyyy'}}</td>
-            <td class="py-2 px-4 border-b text-center">{{transplantation.timeTransplanted | date: 'hh:mm:ss dd.MM.yyyy'}}</td>
-            <td class="py-2 px-4 border-b text-center">{{transplantation.transplantationStatusConfirmedTime | date: 'hh:mm:ss dd.MM.yyyy'}}</td>
-            <td class="py-2 px-4 border-b text-center">{{transplantation.isSuccessful}}</td>
+            <td class="py-2 px-4 border-b text-center">{{transplantation.timeCreated ? (transplantation.timeCreated | date: 'hh:mm:ss dd.MM.yyyy') : '--'}}</td>
+            <td class="py-2 px-4 border-b text-center">{{transplantation.timeTransported ? (transplantation.timeTransported | date: 'hh:mm:ss dd.MM.yyyy') : '--'}}</td>
+            <td class="py-2 px-4 border-b text-center">{{transplantation.timeTransplanted ? (transplantation.timeTransplanted | date: 'hh:mm:ss dd.MM.yyyy') : '--'}}</td>
+            <td class="py-2 px-4 border-b text-center">{{transplantation.transplantationStatusConfirmedTime ? (transplantation.transplantationStatusConfirmedTime | date: 'hh:mm:ss dd.MM.yyyy') : '--'}}</td>
+            <td class="py-2 px-4 border-b text-center">{{ transplantation.transplantationStatusConfirmedTime ? transplantation.isSuccessful : '--'}}</td>
           </tr>
           </tbody>
         </table>
