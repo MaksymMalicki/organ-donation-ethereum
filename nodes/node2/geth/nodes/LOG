@@ -184,3 +184,6 @@
 07:15:23.570618 table@compaction committed F-1 S-480KiB Ke·0 D·48358 T·21.663917ms
 07:15:23.571100 table@remove removed @44
 07:15:23.571757 table@remove removed @42
+=============== Dec 11, 2023 (CET) ===============
+14:17:18.687820 db@close closing
+14:17:18.689221 db@close done T·1.403084ms
